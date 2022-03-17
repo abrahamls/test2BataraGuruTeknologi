@@ -6,11 +6,21 @@ class UserController {
   static async registerUser(req, res, next) {
     try {
       const { email, password } = req.body
+      if (!email) {
+        throw { name: "badRequest", message: "Email is required!" }
+      }
+      if (!password) {
+        throw { name: "badRequest", message: "Password is required!" }
+      }
       const hashedPassword = hashPassword(password)
       await User.create({ email, password: hashedPassword })
       res.status(201).json({ message: "registration is successful" })
     } catch (error) {
-      next(error)
+      if (error._message === 'User validation failed') {
+        res.status(400).json({ message: "Email must be unique" })
+      } else {
+        next(error)
+      }
     }
   }
   static async login(req, res, next) {
