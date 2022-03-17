@@ -16,10 +16,10 @@ class PokemonController {
       })
       const samplePokemon = await Pokemon.findOne({ name: result.data.results[0].name }) //to check if the api has already been called before by checking the name of the pokemon 
       if (samplePokemon) {
-        res.status(200).json({ message: "API ini sudah dihit sebelumnya, dan sudah tersimpan ke database MongoDB" })
+        res.status(200).json({ message: "This API has been called before, and has already been saved to mongoDB" })
       } else {
         await Pokemon.insertMany(result.data.results)
-        res.status(201).json({ message: "API ini belum dihit sebelumnya, dan data akan tersimpan ke database MongoDB" })
+        res.status(201).json({ message: "This API hasnt been called before, and will be saved to mongoDB" })
       }
     } catch (error) {
       next(error)
