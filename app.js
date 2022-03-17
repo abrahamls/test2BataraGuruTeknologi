@@ -5,12 +5,15 @@ const mongoose = require('mongoose')
 const app = express()
 const port = 3000
 const pokemonRouter = require('./routes/pokemon')
+const userRouter = require('./routes/user')
+const { authentication } = require('./middlewares/authentication')
 
 app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
-app.use('/pokemons', pokemonRouter)
+app.use('/pokemons',authentication, pokemonRouter)
+app.use('/users', userRouter)
 
 //connect to DB
 mongoose.connect(process.env.DB_CONNECTION, { useNewUrlParser: true }, () =>
