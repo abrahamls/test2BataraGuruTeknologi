@@ -1,11 +1,14 @@
 const express = require('express')
 const router = express()
+const PokemonController = require('../controllers/pokemonController')
 
-router.get('/', async (req, res) => {
+router.get('/', PokemonController.getPokemons)
+
+router.post('/', async (req, res) => {
   try {
-    console.log('this is pokemon route');
+    console.log(req.body);
   } catch (error) {
-    console.log(error);
+    console.log((error));
   }
 })
 

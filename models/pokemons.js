@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 
 const PokemonSchema = mongoose.Schema({
-  name: string,
-  url: string
+  name: String,
+  url: String
 })
+
+module.exports = mongoose.model('Pokemon', PokemonSchema)
