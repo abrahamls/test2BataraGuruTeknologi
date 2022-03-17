@@ -11,3 +11,5 @@ Dst…..
 4. Terdapat rate limit untuk mengakses API; contoh dalam 1 menit hanya dapat akses API sebanyak
 5X.
 5. Data hit per menit disimpan di database.
+
+
