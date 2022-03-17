@@ -40,7 +40,6 @@ class PokemonController {
       })
       res.status(200).json(pokemonDetail.data)
     } catch (error) {
-      console.log(error)
       next(error)
     }
   }
