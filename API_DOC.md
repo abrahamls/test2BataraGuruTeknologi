@@ -8,6 +8,11 @@ _User_
 - email : string, required, unique
 - password : string, required
 ```
+**untuk login bisa menggunakan** : 
+- email: user@mail.com
+- password: 12345678
+
+**Lalu masukkan token ke headers dengan nama variable access_token**
 
 _Pokemon_
 
