@@ -1,5 +1,5 @@
 const { verifyToken } = require("../helpers/jwt")
-const { User } = require("../models/users")
+const User = require("../models/users")
 
 async function authentication(req, res, next) {
   try {
@@ -9,6 +9,7 @@ async function authentication(req, res, next) {
     }
     const user = verifyToken(access_token)
     const foundUser = await User.findById(user._id)
+    console.log(foundUser);
     if (!foundUser) {
       throw { name: "unauthorized", message: "invalid access token" }
     }
