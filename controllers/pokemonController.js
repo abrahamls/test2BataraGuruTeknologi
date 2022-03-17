@@ -12,16 +12,35 @@ class PokemonController {
       }
       const result = await axios({
         method: 'get',
-        url: `${process.env.POKE_API}?offset=${offset}&limit=10`
+        url: `${process.env.POKE_API}?offset=${offset}&limit=10`,
       })
-      const samplePokemon = await Pokemon.findOne({ name: result.data.results[0].name }) //to check if the api has already been called before by checking the name of the pokemon 
+      const samplePokemon = await Pokemon.findOne({
+        name: result.data.results[0].name,
+      }) //to check if the api has already been called before by checking the name of the pokemon
       if (samplePokemon) {
-        res.status(200).json({ message: "This API has been called before, and has already been saved to mongoDB" })
+        res.status(200).json(result.data.results)
       } else {
         await Pokemon.insertMany(result.data.results)
-        res.status(201).json({ message: "This API hasnt been called before, and will be saved to mongoDB" })
+        res.status(201).json(result.data.results)
       }
     } catch (error) {
+      next(error)
+    }
+  }
+  static async getPokemonDetail(req, res, next) {
+    try {
+      const name = req.params.pokemonName
+      const foundPokemon = await Pokemon.findOne({ name })
+      if (!foundPokemon) {
+        throw { name: 'notFound', message: 'Pokemon not found' }
+      }
+      const pokemonDetail = await axios({
+        method: 'get',
+        url: foundPokemon.url,
+      })
+      res.status(200).json(pokemonDetail.data)
+    } catch (error) {
+      console.log(error)
       next(error)
     }
   }

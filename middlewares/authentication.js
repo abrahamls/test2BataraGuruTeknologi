@@ -9,7 +9,6 @@ async function authentication(req, res, next) {
     }
     const user = verifyToken(access_token)
     const foundUser = await User.findById(user._id)
-    console.log(foundUser);
     if (!foundUser) {
       throw { name: "unauthorized", message: "invalid access token" }
     }

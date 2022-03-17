@@ -10,7 +10,6 @@ class UserController {
       await User.create({ email, password: hashedPassword })
       res.status(201).json({ message: "registration is successful" })
     } catch (error) {
-      console.log(error);
       next(error)
     }
   }
