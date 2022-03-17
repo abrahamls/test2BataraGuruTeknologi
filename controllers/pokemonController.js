@@ -1,4 +1,5 @@
 const Pokemon = require('../models/pokemons')
+const axios = require('axios')
 
 class PokemonController {
   static async getPokemons(req, res, next) {
@@ -10,7 +11,7 @@ class PokemonController {
       } else {
         offset = req.query.page * 10
       }
-      res.status(200).json({ offset, limit })
+      
     } catch (error) {
       console.log(error);   
     }
