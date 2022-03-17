@@ -4,18 +4,13 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const app = express()
 const port = 3000
+const pokemonRouter = require('./routes/pokemon')
 
 app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
-app.get('/', async (req, res) => {
-  try {
-    console.log('tes')
-  } catch (error) {
-    console.log(error)
-  }
-})
+app.use('/pokemons', pokemonRouter)
 
 //connect to DB
 mongoose.connect(process.env.DB_CONNECTION, { useNewUrlParser: true }, () =>
