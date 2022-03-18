@@ -1,27 +1,52 @@
 const Pokemon = require('../models/pokemons')
 const axios = require('axios')
+const redis = require('../config')
 
 class PokemonController {
   static async getPokemons(req, res, next) {
     try {
       let offset = 0
-      if (!req.query.page || req.query.page == 0 || req.query.page == 1) {
+      let page = req.query.page
+      if (!page || page == 1) {
         offset = 0
       } else {
-        offset = req.query.page * 10
+        offset = page * 10
       }
-      const result = await axios({
-        method: 'get',
-        url: `${process.env.POKE_API}?offset=${offset}&limit=10`,
-      })
-      const samplePokemon = await Pokemon.findOne({
-        name: result.data.results[0].name,
-      }) //to check if the api has already been called before by checking the name of the pokemon
-      if (samplePokemon) {
-        res.status(200).json(result.data.results)
+      const pokemonCache = await redis.get(`pokemons`)
+      //check if pokemons already cached
+
+      if (pokemonCache) {
+        const cachedPokemon = JSON.parse(pokemonCache).map((el) => {
+          if (el.page == page) {
+            return el
+          }
+        })
+        if (cachedPokemon[0]) {
+          res.status(200).json(cachedPokemon)
+        } else {
+          const result = await axios({
+            method: 'get',
+            url: `${process.env.POKE_API}?offset=${offset}&limit=10`,
+          })
+          result.data.results.forEach((el) => (el.page = page))
+          const pokemonsToCache = result.data.results
+          await redis.set('pokemons', JSON.stringify(pokemonsToCache))
+          await Pokemon.insertMany(result.data.results)
+          console.log(result.data.results);
+          res.status(200).json(pokemonsToCache)
+        }
       } else {
+        const result = await axios({
+          method: 'get',
+          url: `${process.env.POKE_API}?offset=${offset}&limit=10`,
+        })
+        result.data.results.forEach((el) => (el.page = page))
+        const pokemonsToCache = result.data.results
+        await redis.set('pokemons', JSON.stringify(pokemonsToCache))
         await Pokemon.insertMany(result.data.results)
-        res.status(201).json(result.data.results)
+        console.log(result.data.results);
+
+        res.status(200).json(pokemonsToCache)
       }
     } catch (error) {
       next(error)

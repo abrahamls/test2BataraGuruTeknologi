@@ -19,7 +19,7 @@ const limiter = rateLimit({
 app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(limiter)
+// app.use(limiter) 
 
 app.use('/pokemons', authentication, pokemonRouter)
 app.use('/users', userRouter)
